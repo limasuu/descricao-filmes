@@ -23,7 +23,38 @@
 		<script type="text/javascript">
 			function carregarFilmes(){
 				
+				var ajax= new XMLHttpRequest();
+				var url= "filmes.json";
 				
+				ajax.onreadystatechange= function(){
+					if(ajax.readyState == 4 && ajax.status == 200){
+						
+						var divOpcaoFilmes= document.getElementById("div-opcao-filmes");
+						
+						var json= JSON.parse(ajax.responseText);						
+						var filmes= json.filmes;
+												
+						for(var i in filmes){							
+						
+							var divFilme= document.createElement("div");
+							divFilme.className= "div-filme";
+							divOpcaoFilmes.appendChild(divFilme);
+						
+							var filmeRadio= document.createElement("input")
+							filmeRadio.setAttribute("type", "radio");							
+							filmeRadio.value= i;
+							
+							var filmeLabel= document.createElement("label");
+							filmeLabel.innerHTML= filmes[i].nome;
+							
+							divFilme.appendChild(filmeRadio);
+							divFilme.appendChild(filmeLabel);
+						}
+					}					
+				}
+				
+				ajax.open("GET", url, true);
+				ajax.send();
 			}
 		</script>
 	</head>
