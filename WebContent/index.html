@@ -10,6 +10,9 @@
 				flex-direction: column;
 				align-items: center;
 			}
+			h1{
+				color: green;
+			}
 			#div-opcao-filmes{
 				display: flex;
 				justify-content: center;
@@ -17,6 +20,12 @@
 			}
 			.div-filme{
 				margin-left: 10px;
+			}
+			
+			table, td{
+				border: 1px solid red;
+				border-collapse: collapse;
+				padding: 5px;
 			}
 		</style>
 		
@@ -41,8 +50,10 @@
 							divOpcaoFilmes.appendChild(divFilme);
 						
 							var filmeRadio= document.createElement("input")
-							filmeRadio.setAttribute("type", "radio");							
-							filmeRadio.value= i;
+							filmeRadio.setAttribute("type", "radio");								
+							filmeRadio.name="filmeRadio";
+							filmeRadio.onchange= carregarDescricao;							
+							filmeRadio.value= i;		
 							
 							var filmeLabel= document.createElement("label");
 							filmeLabel.innerHTML= filmes[i].nome;
@@ -51,8 +62,44 @@
 							divFilme.appendChild(filmeLabel);
 						}
 					}					
-				}
+				}				
+				ajax.open("GET", url, true);
+				ajax.send();
+			}
+			
+			function carregarDescricao(e){
 				
+				var ajax= new XMLHttpRequest();
+				var url="filmes.json";
+				
+				ajax.onreadystatechange= function(){
+					if(ajax.readyState == 4 && ajax.status == 200){						
+						
+						var divDescricaoFilme= document.getElementById("div-descricao-filme");
+						divDescricaoFilme.innerHTML= "";
+						
+						var json= JSON.parse(ajax.responseText);
+						var filme= json.filmes[e.target.value];
+						
+						var tabela= document.createElement("table");
+						divDescricaoFilme.appendChild(tabela);
+						
+						for(var dado in filme){
+							
+							var celula1= document.createElement("td");
+							celula1.innerHTML= dado;
+							
+							var celula2= document.createElement("td");
+							celula2.innerHTML= filme[dado];
+						
+							var linha= document.createElement("tr");
+							tabela.appendChild(linha);
+							
+							linha.appendChild(celula1);
+							linha.appendChild(celula2);
+						}					
+					}					
+				}				
 				ajax.open("GET", url, true);
 				ajax.send();
 			}
@@ -62,12 +109,10 @@
 	
 		<h1>Descrição de filmes</h1>
 		
-		<div id="div-opcao-filmes">
-			
+		<div id="div-opcao-filmes">			
 		</div>
 		
-		<div id="div-descricao-filme">
-		
+		<div id="div-descricao-filme">		
 		</div>
 		
 	</body>
